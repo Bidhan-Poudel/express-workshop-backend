@@ -1,47 +1,51 @@
-import express from 'express'; // package.json specify as "type": "module"
-// const express = require("express") // if type is not set to module
-
-/**
- * For production: node index.js
- * For develpment: nodemon
- *     file changes watch, node index.js -> restart
- *     package:
- *          npm i nodemon --save-dev
- *          yarn add nodemon -D
- *  Running Scripts:
- *      For development:
- *          npm run dev or yarn dev
- *      For production:
- *          npm run serve or yarn serve    
- */
-/**
- * express app initialization
- */
-const app = express()
+// Filename: index.js
 
 
-app.use(express.json())
-/**
- * 
- */
-app.get("/", (req, res) => {
-    console.log( req.query)
-    // res.send("GET:hi how are you")
-    res.json({
-        "success": true,
-        "data": []
-    })
-})
-app.post("/", (req, res) => {
-    console.log("Request body", req.body)
-    res.send("POST:hi from post request")
-})
 
-/**
- * Server run certain port and hostname, 
- * port: 8000,
- * host: localhost
- */
-app.listen(8000, () => {
-    console.log("Server running on http://localhost:8000")
-})
+
+//  * Importing packages
+//  */
+
+
+
+const express = require('express');
+const mongoose = require('mongoose');
+require('dotenv').config()
+
+// Import routes from routes/index.js
+const router = require('./routes');
+
+const {
+    NODE_ENV,
+    DEV_MONGO_URL,
+    PROD_MONGO_URL,
+    PORT,
+} = process.env;
+
+// Initialize express
+const app = express();
+
+// Parses the json data from request body
+app.use(express.json());
+
+// Parses the query params from request url
+app.use(express.urlencoded({ extended: true }));
+
+// Uses imported routes in express
+app.use('/', router);
+
+mongoose.connect(NODE_ENV==='development'?DEV_MONGO_URL:PROD_MONGO_URL)
+  .then(() => {
+      console.log('Database connected');
+  })
+  .catch((err) => {
+      console.log(err);
+  });
+
+// Listen web requests on 8000 port
+
+
+const port = PORT || 8000;
+app.listen(port, () => {
+    console.log('App listening on port localhost',port);
+});
