@@ -10,7 +10,10 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config()
+
+
 
 // Import routes from routes/index.js
 const router = require('./routes');
@@ -24,6 +27,8 @@ const {
 
 // Initialize express
 const app = express();
+
+app.use(cors());
 
 // Parses the json data from request body
 app.use(express.json());

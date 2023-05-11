@@ -65,7 +65,7 @@ router.put('/users/:id', updateUser);
 //  * DELETE api for deleting a user by id
 //  */
 async function deleteUser(req, res) {
-    const user = await userSchema.findByIdAndDelete({ _id: req.params.id });
+    const user = await userSchema.findOneAndDelete({ _id: req.params.id });
     return res.json(user);
 }
 router.delete('/users/:id', deleteUser);
